@@ -1,0 +1,11 @@
+ perl -pi.bak -e 's/\|/-/g' anwica_table_start.csv 
+ psqlite3 TE_db
+	.mode csv
+	.import anwica_table_start.csv  start_anwica
+	UPDATE start_anwica SET genotype = replace( genotype, '-', '|' );
+	.import join_table_start.csv start_join
+	.import indexed_merged_te_cnts_start.csv start_indexed
+
+
+#Note Join works
+select a.*, c.* from start_anwica a, start_join b, start_indexed c WHERE a.as_i = b.as_i AND b.tes_i = c.tes_i; 
