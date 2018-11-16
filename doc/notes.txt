@@ -1,0 +1,90 @@
+anwica_table_start.csv (same as anwica_table_end.csv)
+----------------------
+as_i	INTEGER	Unique index number
+side	start|end 	Depends on table name (see above)
+chromo	STRING(2)	Number of the chromosone if an autosome else X or Y
+pos	INTEGER	position on stated chromosone for the start
+strand	+|-
+[Sequence Section]
+	ref_like_prefix
+	insertion_after_prefix
+	insertion_before_suffix
+	ref_like_suffix
+REF 	1|0	TRUE or FALSE for the sequence being all in the ref_like
+TE 	1|0	TRUE or FALSE
+state	Private|Shared|Fixed	Derived	
+genotype
+...
+(Multiple counts for each sample with the sample name as header)
+...
+my_id	String	
+
+
+indexed_merged_te_cnts_start.csv (same as indexed_merged_te_cnts_end.csv)
+----------------------
+tes_i	INTEGER	Unique index number
+TELike
+side
+(Multiple counts for each sample with the sample name as header)
+
+
+denovoTE105_start.csv (denovoTE105_end.csv)
+----------------------
+my_id
+chromo
+pos
+strand
+genotype
+TE
+
+
+
+
+Glossary from page
+-----------------------
+chromo,pos: location of TE
+strand: orientation of TE
+distance: distance from current TE to next TE
+ref_te: 1 if TE is also in reference otherwise 0
+state: 
+	fixed - TE is in everyone, (almost everyone), 
+	shared - only in a subset
+	private - present in only one strain/sample
+	private? - present in only one strain/sample but does not have enough reads to support
+	singleton - TE is present in only one sample and no other sample with the same haplotype is available in that location
+before: reference sequence before the TE
+after: reference sequence after the TE
+genotype: 
+	if shared or fixed: genotype of samples who has TE in that location
+	if private or singleton: name of the sample then followed by its genotype in parenthesis. Name is shortened for CC
+From column J to EU:
+	 0: has nonTE-like sequence only
+	 1: has TE-like sequence only
+	 2: has both nonTE-like, and TE-like sequence, and sample is het for TE, not for multiple founder
+	 3: has both nonTE-like, and TE-like sequence, and sample has two different founders in that location
+	-1: does not have any count: either has low coverage, deletion or algorithmic fault
+
+my_id: class of TE that is found in that location
+region:
+	exon: if TE is in exon
+	intron: if TE is in gene but not in exon
+	promoter: if TE is not in gene but within 1000base from transcription binding site
+	intergenic: if TE is neither in gene, nor in promoter
+	regions left to the double vertical bars have the same orientation as TE
+		If there are multiple regions in this left side, then they will be seperated by one vertical bars.
+	regions right to the double vertical bars have the opposite orientation as TE
+		If there are multiple regions in this right side, then they will be seperated by one vertical bars.
+
+gene_id:
+	ID of gene if TE is not intergenic
+	IDs left to double vertical bars have the same orientation as TE
+		if there are multiple IDs in this group then they are seperated by one vertical bar
+	IDs right to double vertival bars have the opposite orientation as TE
+		if there are multiple IDs in this group then they are seperated by one vertical bar
+
+gene_name:
+	Name of gene if TE is not intergenic
+	Name left to double vertical bars have the same orientation as TE
+		if there are multiple names in this group then they are seperated by one vertical bar
+	Name right to double vertival bars have the opposite orientation as TE
+		if there are multiple names in this group then they are seperated by one vertical bar
