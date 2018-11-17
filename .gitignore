@@ -2,3 +2,4 @@
 *.sqlite
 *.bak
 .DS_Store
+.idea
