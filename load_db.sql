@@ -12,3 +12,4 @@ UPDATE load_end_anwica SET genotype = replace( genotype, '-', '|' );
 UPDATE load_denovo_te105_start SET genotype = replace( genotype, '-', '|' );
 .import ./raw_csv/denovoTE105_end.clean.csv load_denovo_te105_end
 UPDATE load_denovo_te105_end SET genotype = replace( genotype, '-', '|' );
+.import ./raw_csv/FinalMatrix_ALL.csv load_FinalMatrix_ALL
