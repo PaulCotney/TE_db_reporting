@@ -88,3 +88,56 @@ gene_name:
 		if there are multiple names in this group then they are seperated by one vertical bar
 	Name right to double vertival bars have the opposite orientation as TE
 		if there are multiple names in this group then they are seperated by one vertical bar
+
+
+2018_12_13 Meeting
+
+The database is going to use the raw data at http://csbio.unc.edu/TEs/index.py?run=Downloads.index with Original Count Table. This is to the majority of raw data (not derived). The exception is the REF and TE field which are somewhat dervived by Anwica, which doesn't probably matter that it is derived. 
+
+* Where REF = 1 and TE = 0 Rare
+
+side means in raw data which side the TE was FIRST discovered. 
+
+The region field should have values for each item: intergenic, promoter, promoter--, exon, and  exon--. Note that -- means it is hitting in the opposite direction (from what not sure).
+
+Note the TRUE (as in what we care about) Consistancy rate is [% (in)consistent for zypgosty].  Our problem with this rate is # read counts spiking. We can deal with with a normalized count using either (mode or avg).
+
+
+Note in the main Report they use for DB-> ensemble genes tsl1 only <- in order to read in the (name?)
+
+Discussion of the number of intron TE's that are actually transcribing. Fernando seems excited that this is novel information.
+
+WHat is index hoping?
+
+With my data (DB) add median, mode, and how many reads are unique.
+	Also,  Duplication factor which is what franction of reads are duplicated.
+
+
+
+msBWT/ LCPplay is the name of notebook that Leonard was using. See 
+----
+import matplotlib
+import numpy
+import matplotlib.pyplot as plot
+%matplotlib inline
+----
+ALSO
+-----
+plot.xlim((0,30))
+#plot.ylim((0,30))
+result = plot.plot([i+1 for i in xrange(3,30)],rsizes[0,3:30],'r.--')
+-----
+The idea here is how kmer repeats.
+
+
+result = plot.plot(range(0,152), count)
+
+Question from Fernando is what are we offering datawise what makes that useful for people. 
+
+Problem with public DB of TE is that is mostly concensense of multiple reporters which doesn't mean a lot.
+
+In our genotype column should be split into 8 Boolean columns called AA | BB | CC .... such that 
+
+genotype | AA | BB | CC | ...
+-----------------------------
+AA|BB    |True|True|False|...
