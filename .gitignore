@@ -1,4 +1,6 @@
 *.csv
+*.xlsx
+*.ppt
 *.sqlite
 *.bak
 .DS_Store
