@@ -141,3 +141,7 @@ In our genotype column should be split into 8 Boolean columns called AA | BB | C
 genotype | AA | BB | CC | ...
 -----------------------------
 AA|BB    |True|True|False|...
+
+Spreadsheets:
+--------------
+Mappable_TEs derived

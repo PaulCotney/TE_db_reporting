@@ -1,7 +1,10 @@
 *.csv
+kmer_query_export.sql
+*.pptx
 *.xlsx
-*.ppt
+*.xlsm
 *.sqlite
 *.bak
 .DS_Store
 .idea
+*.backup

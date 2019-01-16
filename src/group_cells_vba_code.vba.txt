@@ -1,0 +1,35 @@
+Public Sub GroupCells()
+    Dim rowCount As Long, currentRow As Long
+    Dim firstBlankRow As Long, lastBlankRow As Long
+    Dim currentRowValue As String
+
+    firstBlankRow = 0
+    lastBlankRow = 0
+    'for every row in the range
+    For currentRow = 2 To 71257
+        currentRowValue = Cells(currentRow, 1).Value
+        If (currentRowValue = False) Then
+            'if cell is blank and firstBlankRow hasn't been assigned yet
+            If firstBlankRow = 0 Then
+                firstBlankRow = currentRow
+            End If
+        ElseIf Not (currentRowValue = False) Then
+            If firstBlankRow <> 0 Then
+                'if firstBlankRow is assigned and this row has a value
+                'then the cell one row above this one is to be considered
+                'the lastBlankRow to include in the grouping
+                lastBlankRow = currentRow - 1
+            End If
+        End If
+
+        'if first AND last blank rows have been assigned, then create a group
+        'then reset the first/lastBlankRow values to 0 and begin searching for next
+        'grouping
+        If firstBlankRow <> 0 And lastBlankRow <> 0 Then
+            Range(Cells(firstBlankRow, 1), Cells(lastBlankRow, 1)).EntireRow.Select
+            Selection.Group
+            firstBlankRow = 0
+            lastBlankRow = 0
+        End If
+    Next
+End Sub

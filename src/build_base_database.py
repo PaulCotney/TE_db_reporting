@@ -3,6 +3,22 @@ import itertools
 import re
 
 cc_re = re.compile('CC...')
+founder_exists = re.compile('(AA|BB|CC|DD|EE|FF|HH)')
+
+
+
+connection = sqlite3.connect('TE_db.sqlite')
+connection.row_factory = sqlite3.Row
+cursor_read = connection.cursor()
+cursor_write = connection.cursor()
+
+# Remove items from mappable_TEs where no founder strain is in the genotypes field
+rows_to_delete = []
+for row in cursor_read.execute('SELECT rowid, genotype FROM load_mappable_tes'):
+    if not founder_exists.search(row[1]):
+        rows_to_delete.append(row[0])
+for row_id in rows_to_delete:
+    cursor_write.execute('DELETE FROM load_mappable_tes WHERE rowid = ? ', (int(row_id),))
 
 # Create the sample table and populate it with information
 creation_sql = ('CREATE TABLE sample (pid INTEGER PRIMARY KEY, name TEXT, strain TEXT, founder INTEGER, '
@@ -15,11 +31,6 @@ strain_codes = {'A': 'A/J',
                 'F': 'CAST/EiJ',
                 'G': 'PWK/PhJ',
                 'H': 'WSB/EiJ'}
-
-connection = sqlite3.connect('TE_db.sqlite')
-connection.row_factory = sqlite3.Row
-cursor_read = connection.cursor()
-cursor_write = connection.cursor()
 
 # Load sample table
 cursor_write.execute('DROP TABLE IF EXISTS sample')
@@ -125,7 +136,7 @@ for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
                                                                                                   te_in_cc_id))
 connection.commit()
 
-# Delete load tabels
+# Delete load tables
 delete_list = []
 for row in cursor_read.execute("SELECT name FROM sqlite_master WHERE type='table' AND name like 'load_%' ORDER BY name"):
     delete_list.append(row[0])

@@ -1,0 +1,58 @@
+Samples total:101 found already:15
+Loading sample_list took - 2.10491609573 seconds
+Loading kmer_list took - 1.47273898125 seconds for 31013 entries
+Returning results from sample query for sample 10-CC035M1489_UNC_NYGC took - 395.720285177 seconds
+Returning results from sample query for sample 10-CC056M534_UNC_NYGC took - 468.610698938 seconds
+Returning results from sample query for sample 10-CC012M1359_UNC_NYGC took - 18010.3095779 seconds
+Returning results from sample query for sample 10-CC043F1840_UNC_UNC took - 293.999243021 seconds
+Returning results from sample query for sample 10-CC013M1075_UNC_NYGC took - 1322.54326916 seconds
+Returning results from sample query for sample 10-CC018M1136_UNC_NYGC took - 357.750610828 seconds
+Returning results from sample query for sample 10-CC028M899_UNC_NYGC took - 476.569756031 seconds
+Returning results from sample query for sample 10-CC057M750_UNC_NYGC took - 618.119884968 seconds
+Returning results from sample query for sample 10-CC073M796_UNC_NYGC took - 22234.7151611 seconds
+Returning results from sample query for sample 10-CC003M4601_UNC_NYGC took - 8468.60125303 seconds
+Returning results from sample query for sample 10-CC006F1000_JAX_NYGC took - 9376.22851896 seconds
+Returning results from sample query for sample 10-CC062M733_UNC_NYGC took - 245.416620016 seconds
+Returning results from sample query for sample 10-CC029M720_UNC_NYGC took - 358.439952135 seconds
+Returning results from sample query for sample 10-CC031M411_UNC_NYGC took - 598.468189001 seconds
+
+Query time: 10-CC055M3799_UNC_NYGC - 1021.29s
+Returning results from sample query for sample 10-CC055M3799_UNC_NYGC took - 1021.50s
+Query time: 10-CC044M1328_UNC_NYGC - 897.59s
+Returning results from sample query for sample 10-CC044M1328_UNC_NYGC took - 897.80s
+Query time: 10-CC027M2377_UNC_UNC - 271.55s
+Returning results from sample query for sample 10-CC027M2377_UNC_UNC took - 271.77s
+Query time: 10-CC053M907_UNC_UNC - 299.12s
+Returning results from sample query for sample 10-CC053M907_UNC_UNC took - 299.32s
+Query time: 10-CC063M615_UNC_NYGC - 864.94s
+Returning results from sample query for sample 10-CC063M615_UNC_NYGC took - 865.18s
+Query time: 10-CC076M508_UNC_UNC - 279.13s
+Returning results from sample query for sample 10-CC076M508_UNC_UNC took - 279.33s
+Query time: 10-CC060M813_UNC_NYGC - 731.53s
+Returning results from sample query for sample 10-CC060M813_UNC_NYGC took - 731.73s
+Query time: 10-CC038M806_UNC_NYGC - 289.69s
+Returning results from sample query for sample 10-CC038M806_UNC_NYGC took - 289.89s
+Query time: 10-CC079M1086_UNC_UNC - 582.95s
+Returning results from sample query for sample 10-CC079M1086_UNC_UNC took - 583.18s
+Query time: 10-CC007M3406_UNC_NYGC - 560.11s
+Returning results from sample query for sample 10-CC007M3406_UNC_NYGC took - 560.32s
+Query time: 10-CC036M819_UNC_NYGC - 545.02s
+Returning results from sample query for sample 10-CC036M819_UNC_NYGC took - 545.24s
+Query time: 10-CC059M4642_UNC_NYGC - 581.08s
+Returning results from sample query for sample 10-CC059M4642_UNC_NYGC took - 581.29s
+Query time: 10-CC020M533_UNC_NYGC - 970.78s
+Returning results from sample query for sample 10-CC020M533_UNC_NYGC took - 971.04s
+Query time: 10-CC010M3518_UNC_NYGC - 624.69s
+Returning results from sample query for sample 10-CC010M3518_UNC_NYGC took - 624.88s
+Query time: 10-CC006M4698_UNC_NYGC - 684.46s
+Returning results from sample query for sample 10-CC006M4698_UNC_NYGC took - 684.70s
+Query time: 10-CC005M4714_UNC_NYGC - 840.11s
+Returning results from sample query for sample 10-CC005M4714_UNC_NYGC took - 840.32s
+Query time: 10-CC045M817_UNC_NYGC - 289.04s
+Returning results from sample query for sample 10-CC045M817_UNC_NYGC took - 289.23s
+Query time: 10-CC082M0505_UNC_UNC - 587.67s
+Returning results from sample query for sample 10-CC082M0505_UNC_UNC took - 587.91s
+Query time: 10-CC074M495_UNC_UNC - 415.56s
+Returning results from sample query for sample 10-CC074M495_UNC_UNC took - 415.75s
+Query time: 10-CC005F1000_JAX_NYGC - 277.54s
+Returning results from sample query for sample 10-CC005F1000_JAX_NYGC took - 277.72s
