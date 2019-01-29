@@ -1,0 +1,10 @@
+CREATE TABLE kmer_query_export AS select a.ref_like_prefix, a.insertion_after_prefix, a.insertion_before_suffix, a.ref_like_suffix, pos, b.dataset, b.forward, b.reverse from raw a, kmer_query b WHERE a.pid = b.raw_id;
+
+EXPORTING
+http://www.sqlitetutorial.net/sqlite-dump/
+
+EXPORT CSV
+http://www.sqlitetutorial.net/sqlite-tutorial/sqlite-export-csv/
+
+IMPORTING
+sqlite3 TE_db.sqlite < kmer_query_export.sql 

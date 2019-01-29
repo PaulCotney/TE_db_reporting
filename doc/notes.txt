@@ -145,3 +145,23 @@ AA|BB    |True|True|False|...
 Spreadsheets:
 --------------
 Mappable_TEs derived
+FinalMatrix_ALL_collapsed
+	Columms that are not derived.
+		region
+		gene_id
+		gene_name
+	Columns that may not be involved  (Any sample name where -1 come from?)
+
+----
+CREATE TABLE load_map_calls (call_value INTEGER, number_of_hits INTEGER, load_mappable_tes_id INTEGER FOREIGN KEY(load_mappable_tes_id) REFERENCES load_mappable_tes(rowiid))
+
+DROP VIEW IF EXISTS v_mappable_tes_ratios;
+CREATE TABLE v_mappable_tes_ratios AS 
+SELECT a.*, b.number_of_hits calls_neg1, c.number_of_hits calls_0, d.number_of_hits calls_1, e.number_of_hits calls_2, a.rowid orig_order   FROM load_mappable_tes a 
+LEFT OUTER JOIN (SELECT number_of_hits, load_mappable_tes_id FROM load_map_calls WHERE call_value = -1) b ON a.rowid = b.load_mappable_tes_id
+LEFT OUTER JOIN (SELECT number_of_hits, load_mappable_tes_id FROM load_map_calls WHERE call_value = 0) c ON a.rowid = c.load_mappable_tes_id
+LEFT OUTER JOIN (SELECT number_of_hits, load_mappable_tes_id FROM load_map_calls WHERE call_value = 1) d ON a.rowid = d.load_mappable_tes_id
+LEFT OUTER JOIN (SELECT number_of_hits, load_mappable_tes_id FROM load_map_calls WHERE call_value = 2) e ON a.rowid = e.load_mappable_tes_id;
+----
+
+I am missing data with TEs that 
