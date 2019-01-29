@@ -2,6 +2,44 @@ import sqlite3
 import itertools
 import re
 
+# This takes a dictionary of values and uses that to create the extension105mer / junct_105_hits / hit tables from
+# load tables.
+def convert_tmp_full_105_table(args):
+    call_columns = dict()
+    call105_columns = dict()
+    row_columns = cursor_read.execute("SELECT * FROM {}".format(args['table_name'])).fetchone()
+    call_columns['start'] = row_columns.keys().index('genotype') + 1
+    call_columns['end'] = row_columns.keys().index('my_id') - 1
+    call105_columns['start'] = row_columns.keys().index('side:1') + 1
+    call105_columns['end'] = len(row_columns) - 1
+
+    for row in cursor_read.execute("SELECT * FROM {}".format(args['table_name'])):
+        pid_105 = cursor_write.execute('INSERT INTO extension105mer(start_or_end, side, chromo, pos, strand, '
+                                      'ref_like_prefix_seq, insertion_after_prefix_seq, insertion_before_suffix_seq, '
+                                      'ref_like_suffix_seq, TELike_seq, REF, state) '
+                                      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                      (args['start_pos'], row['side'], row['chromo'], row['pos'], row['strand'],
+                                       row['ref_like_prefix'], row['insertion_after_prefix'],
+                                       row['insertion_before_suffix'], row['ref_like_suffix'],
+                                       row['TELike'], row['REF'], row['state'])).lastrowid
+        for sample in itertools.islice(row.keys(), call_columns['start'] + 1, call_columns['end']):
+            if int(row[sample]) > 0:
+                pid_hit = cursor_write.execute('INSERT INTO hit (target, value) VALUES (?,?)',
+                                     (row_columns[sample], row[sample])).lastrowid
+                cursor_write.execute('INSERT INTO junct_105_hits(extension105mer_id, hit_id) VALUES (?,?)',
+                                     (pid_105, pid_hit))
+        for sample in itertools.islice(row.keys(), call105_columns['start'] + 1, call105_columns['end']):
+            if int(row[sample].replace('.0', '')) > 0:
+                pid_hit = cursor_write.execute('INSERT INTO hit (target, value) VALUES (?,?)',
+                                     (row_columns[sample].replace(':0', ''), row[sample])).lastrowid
+                cursor_write.execute('INSERT INTO junct_105_hits105(extension105mer_id, hit_id) VALUES (?,?)',
+                                     (pid_105, pid_hit))
+        for genotype_call in row['genotype'].split('|'):
+            pid_hit = args['potential_genotype'][genotype_call]
+            cursor_write.execute('INSERT INTO junct_105_genotype (extension105mer_id, genotype_id) VALUES'
+                                 ' (?,?)', (pid_105, pid_hit))
+
+
 genotype_re = re.compile('\((.*)\)')
 cc_re = re.compile('CC...')
 founder_exists = re.compile('(AA|BB|CC|DD|EE|FF|HH)')
@@ -9,9 +47,10 @@ founder_exists = re.compile('(AA|BB|CC|DD|EE|FF|HH)')
 connection = sqlite3.connect('TE_db.sqlite')
 connection.row_factory = sqlite3.Row
 cursor_read = connection.cursor()
+cursor_read2 = connection.cursor()
 cursor_write = connection.cursor()
 
-with open('tmp_base_database.sql', 'r') as myfile:
+with open('build_base_database.sql', 'r') as myfile:
     commands = myfile.read().replace('\n', '').split(";")
     for command in commands:
         if len(command.replace(" ","")) <> 0:
@@ -77,14 +116,6 @@ connection.commit()
 # Now with the sample table loaded we create the raw_matrix and the sample_calls table
 cursor_read.close()
 cursor_read = connection.cursor()
-cursor_write.execute('DROP TABLE IF EXISTS raw')
-cursor_write.execute('CREATE TABLE raw (pid INTEGER PRIMARY KEY, my_id STRING, side STRING, chrom STRING, '
-                     'pos INTEGER, strand STRING, ref_like_prefix STRING, insertion_after_prefix STRING, '
-                     'insertion_before_suffix STRING, ref_like_suffix STRING, REF STRING, TE STRING)')
-cursor_write.execute('DROP TABLE IF EXISTS sample_call')
-cursor_write.execute('CREATE TABLE sample_call (raw_id INTEGER, sample_id INTEGER, value INTEGER, FOREIGN KEY(raw_id) '
-                     'REFERENCES raw(pid), FOREIGN KEY(sample_id) REFERENCES sample(pid)) ')
-
 for row in cursor_read.execute('SELECT * FROM load_FinalMatrix_ALL'):
     raw_rowid = cursor_write.execute('INSERT INTO raw (my_id, side, chrom, pos , strand, ref_like_prefix, '
                                      'insertion_after_prefix, insertion_before_suffix, ref_like_suffix, REF, TE) '
@@ -99,10 +130,8 @@ for row in cursor_read.execute('SELECT * FROM load_FinalMatrix_ALL'):
                                  (raw_rowid, sample_table[sample], row[sample]))
 connection.commit()
 
-# We now create a test example with TE_in_CC
 cursor_read.close()
 cursor_read = connection.cursor()
-cursor_read2 = connection.cursor()
 
 # Adding to the report table the values from the derived table: load_mappable_tes and build the gene_detail join table
 for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
@@ -123,8 +152,54 @@ for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
                                        (row['my_id'], row['chromo'], row['pos'], row['strand'])).lastrowid
     #Write out the join table
     for gene_detail_id in gene_detail_rowids:
-        cursor_write.execute('INSERT INTO gene_matrix(gene_detail_id, te_in_cc_id) VALUES(?,?)', (gene_detail_id,
-                                                                                                  te_in_cc_id))
+        cursor_write.execute('INSERT INTO junct_te_in_cc_gene(gene_detail_id, te_in_cc_id) VALUES(?,?)', (gene_detail_id,
+                                                                                                          te_in_cc_id))
+
+# Build genotype helper dictionary (params['potential_genotype'][genotype]) and the genotype table
+params = dict()
+params['potential_genotype'] = dict()
+genotype_raw = []
+for genotype in cursor_read.execute("SELECT DISTINCT genotype FROM (SELECT genotype FROM tmp_full_105mer_start UNION SELECT "
+                               "genotype FROM tmp_full_105mer_end) "):
+    genotype_raw.append(genotype)
+genotypes = set()
+for raw in genotype_raw:
+    for item in raw['genotype'].split('|'):
+        genotypes.add(item)
+for genotype in genotypes:
+    instance = genotype_re.search(genotype)
+    if instance is None:
+        pid = cursor_write.execute('INSERT INTO genotype ( value, short_value) VALUES (?, ?) ',
+                                   (genotype, genotype.replace('*', ''))).lastrowid
+    else:
+        pid = cursor_write.execute('INSERT INTO genotype ( value, short_value) VALUES (?, ?) ',
+                                   (genotype, instance.group(1).replace('*', ''))).lastrowid
+
+    params['potential_genotype'][genotype] = pid
+
+
+params['table_name'] = 'tmp_full_105mer_start'
+params['start_pos'] = 'start'
+convert_tmp_full_105_table(params)
+params['table_name'] = 'tmp_full_105mer_end'
+params['start_pos'] = 'end'
+convert_tmp_full_105_table(params)
+
+# Build Mappable Extensions
+for row in cursor_read.execute("SELECT *,rowid FROM load_mappable_tes"):
+    totals = {}
+    calls = []
+    for i in xrange(9,152):
+        calls.append(int(row[i]))
+    for call in calls:
+        if call in totals.keys():
+            totals[call] = totals[call] + 1
+        else:
+            totals[call] = 1
+    for key, value in totals.iteritems():
+        cursor_write.execute('INSERT INTO load_map_calls (call_value, number_of_hits, load_mappable_tes_id) '
+                             'VALUES (?,?,?)', (key, value, row['rowid']))
+
 connection.commit()
 
 # Delete load tables
