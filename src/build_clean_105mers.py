@@ -46,7 +46,7 @@ def convert_tmp_full_105_table(args):
 
 
 
-with open('tmp_clean_105mers.sql', 'r') as myfile:
+with open('build_clean_105mers.sql', 'r') as myfile:
     commands = myfile.read().replace('\n', '').split(";")
     for command in commands:
         if len(command.replace(" ","")) <> 0:
