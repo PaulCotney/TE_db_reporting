@@ -2,15 +2,24 @@ import sqlite3
 import itertools
 import re
 
+genotype_re = re.compile('\((.*)\)')
 cc_re = re.compile('CC...')
 founder_exists = re.compile('(AA|BB|CC|DD|EE|FF|HH)')
-
-
 
 connection = sqlite3.connect('TE_db.sqlite')
 connection.row_factory = sqlite3.Row
 cursor_read = connection.cursor()
 cursor_write = connection.cursor()
+
+with open('tmp_base_database.sql', 'r') as myfile:
+    commands = myfile.read().replace('\n', '').split(";")
+    for command in commands:
+        if len(command.replace(" ","")) <> 0:
+            try :
+                cursor_write.execute(command + ";")
+            except sqlite3.OperationalError as e:
+                print("Fail on command: {} with {}", (command, e ))
+                raise
 
 # Remove items from mappable_TEs where no founder strain is in the genotypes field
 rows_to_delete = []
@@ -20,9 +29,7 @@ for row in cursor_read.execute('SELECT rowid, genotype FROM load_mappable_tes'):
 for row_id in rows_to_delete:
     cursor_write.execute('DELETE FROM load_mappable_tes WHERE rowid = ? ', (int(row_id),))
 
-# Create the sample table and populate it with information
-creation_sql = ('CREATE TABLE sample (pid INTEGER PRIMARY KEY, name TEXT, strain TEXT, founder INTEGER, '
-                'strain_code TEXT, long_strain_code TEXT )',)
+# Load sample table
 strain_codes = {'A': 'A/J',
                 'B': 'C57BL/6J',
                 'C': '129S1/SvImJ',
@@ -31,11 +38,6 @@ strain_codes = {'A': 'A/J',
                 'F': 'CAST/EiJ',
                 'G': 'PWK/PhJ',
                 'H': 'WSB/EiJ'}
-
-# Load sample table
-cursor_write.execute('DROP TABLE IF EXISTS sample')
-for command in creation_sql:
-    cursor_write.execute(command)
 row = cursor_read.execute('SELECT * FROM load_finalMatrix_ALL').fetchone()
 row_columns_start = row.keys().index('TE') + 1
 row_columns_end = len(row.keys())
@@ -101,17 +103,6 @@ connection.commit()
 cursor_read.close()
 cursor_read = connection.cursor()
 cursor_read2 = connection.cursor()
-cursor_write.execute('DROP TABLE IF EXISTS gene_detail')
-cursor_write.execute('CREATE TABLE gene_detail (pid INTEGER PRIMARY KEY, region STRING, gene_id STRING, '
-                     'gene_name STRING)')
-cursor_write.execute('DROP TABLE IF EXISTS TE_in_CC')
-cursor_write.execute('CREATE TABLE TE_in_CC (pid INTEGER PRIMARY KEY, my_id STRING, chrom STRING, pos INTEGER, '
-                     'strand STRING, genotype_in_founders STRING, SDP STRING, Count_in_founders INTEGER, '
-                     'Count_in_CC INTEGER, gene_matrix_id INTEGER)')
-cursor_write.execute('DROP TABLE IF EXISTS gene_matrix')
-cursor_write.execute('CREATE TABLE gene_matrix (gene_detail_id INTEGER, te_in_cc_id INTEGER, '
-                     'FOREIGN KEY(gene_detail_id) REFERENCES gene_detail(pid), FOREIGN KEY(te_in_cc_id) REFERENCES '
-                     'TE_in_CC(pid))')
 
 # Adding to the report table the values from the derived table: load_mappable_tes and build the gene_detail join table
 for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
@@ -137,8 +128,8 @@ for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
 connection.commit()
 
 # Delete load tables
-delete_list = []
-for row in cursor_read.execute("SELECT name FROM sqlite_master WHERE type='table' AND name like 'load_%' ORDER BY name"):
-    delete_list.append(row[0])
-for delete_item in delete_list:
-    cursor_write.execute("DROP TABLE " + delete_item )
+#delete_list = []
+#for row in cursor_read.execute("SELECT name FROM sqlite_master WHERE type='table' AND name like 'load_%' ORDER BY name"):
+#    delete_list.append(row[0])
+#for delete_item in delete_list:
+#    cursor_write.execute("DROP TABLE " + delete_item )
