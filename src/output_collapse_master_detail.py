@@ -8,7 +8,7 @@ connection.row_factory = sqlite3.Row
 cursor_read = connection.cursor()
 cursor_read2 = connection.cursor()
 
-csv_out_file = open("FinalMatrix_merged.csv", "w+")
+csv_out_file = open("collapse_master_detail.csv", "w+")
 # Remove items from mappable_TEs where no founder strain is in the genotypes field
 
 csv_out_file.write("collapsed,my_id,side,chrom,pos,strand,state,before,after,ref_like_prefix,insertion_after_prefix,"
