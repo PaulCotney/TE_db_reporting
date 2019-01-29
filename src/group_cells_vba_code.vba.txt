@@ -1,3 +1,5 @@
+# This is code to make Parent - Detail XLS spreadsheet
+
 Public Sub GroupCells()
     Dim rowCount As Long, currentRow As Long
     Dim firstBlankRow As Long, lastBlankRow As Long
