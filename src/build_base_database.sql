@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS hit;
 DROP TABLE IF EXISTS genotype;
 DROP TABLE IF EXISTS extension105mer;
 DROP TABLE IF EXISTS load_map_calls;
+DROP TABLE IF EXISTS kmer_query;
 CREATE TABLE sample (pid INTEGER PRIMARY KEY, name TEXT, strain TEXT, founder INTEGER, strain_code TEXT, long_strain_code TEXT );
 CREATE TABLE raw (pid INTEGER PRIMARY KEY, my_id STRING, side STRING, chrom STRING,
 pos INTEGER, strand STRING, ref_like_prefix STRING, insertion_after_prefix STRING, 
@@ -53,4 +54,5 @@ CREATE TABLE junct_105_genotype (extension105mer_id INTEGER, genotype_id INTEGER
 	FOREIGN KEY(extension105mer_id) REFERENCES extension105mer(pid),
 	FOREIGN KEY(genotype_id) REFERENCES genotype(pid)
 	);
-CREATE TABLE load_map_calls (call_value INTEGER, number_of_hits INTEGER, load_mappable_tes_id INTEGER, FOREIGN KEY(load_mappable_tes_id) REFERENCES load_mappable_tes(rowiid))
+CREATE TABLE load_map_calls (call_value INTEGER, number_of_hits INTEGER, load_mappable_tes_id INTEGER, FOREIGN KEY(load_mappable_tes_id) REFERENCES load_mappable_tes(rowiid));
+CREATE TABLE kmer_query (raw_id INTEGER, dataset STRING, forward INTEGER, reverse INTEGER, FOREIGN KEY(raw_id) REFERENCES raw(pid))

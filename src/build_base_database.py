@@ -25,13 +25,13 @@ def convert_tmp_full_105_table(args):
         for sample in itertools.islice(row.keys(), call_columns['start'] + 1, call_columns['end']):
             if int(row[sample]) > 0:
                 pid_hit = cursor_write.execute('INSERT INTO hit (target, value) VALUES (?,?)',
-                                     (row_columns[sample], row[sample])).lastrowid
+                                     (sample, row[sample])).lastrowid
                 cursor_write.execute('INSERT INTO junct_105_hits(extension105mer_id, hit_id) VALUES (?,?)',
                                      (pid_105, pid_hit))
         for sample in itertools.islice(row.keys(), call105_columns['start'] + 1, call105_columns['end']):
             if int(row[sample].replace('.0', '')) > 0:
                 pid_hit = cursor_write.execute('INSERT INTO hit (target, value) VALUES (?,?)',
-                                     (row_columns[sample].replace(':0', ''), row[sample])).lastrowid
+                                     (sample.replace(':0', ''), row[sample])).lastrowid
                 cursor_write.execute('INSERT INTO junct_105_hits105(extension105mer_id, hit_id) VALUES (?,?)',
                                      (pid_105, pid_hit))
         for genotype_call in row['genotype'].split('|'):
@@ -129,31 +129,8 @@ for row in cursor_read.execute('SELECT * FROM load_FinalMatrix_ALL'):
             cursor_write.execute('INSERT INTO sample_call (raw_id, sample_id, value) VALUES (?,?,?)',
                                  (raw_rowid, sample_table[sample], row[sample]))
 connection.commit()
-
 cursor_read.close()
 cursor_read = connection.cursor()
-
-# Adding to the report table the values from the derived table: load_mappable_tes and build the gene_detail join table
-for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
-    regions = row['region'].split('|')
-    gene_ids = row['gene_id'].split('|')
-    gene_names = row['gene_name'].split('|')
-    assert (len(regions) == len(gene_ids) == len(gene_names))
-    gene_detail_rowids = list()
-    for i in range(0, len(regions)):
-        gene_detail_rowids.append(
-            cursor_write.execute('INSERT INTO gene_detail(region, gene_id, gene_name) VALUES (?,?,?)',
-                                 (regions[i], gene_ids[i], gene_names[i])).lastrowid)
-    genotype_in_founders = None
-    SDP = None
-    count_in_founders = None
-    count_in_CC = None
-    te_in_cc_id = cursor_write.execute('INSERT INTO TE_in_CC (my_id, chrom, pos, strand) VALUES (?,?,?,?)',
-                                       (row['my_id'], row['chromo'], row['pos'], row['strand'])).lastrowid
-    #Write out the join table
-    for gene_detail_id in gene_detail_rowids:
-        cursor_write.execute('INSERT INTO junct_te_in_cc_gene(gene_detail_id, te_in_cc_id) VALUES(?,?)', (gene_detail_id,
-                                                                                                          te_in_cc_id))
 
 # Build genotype helper dictionary (params['potential_genotype'][genotype]) and the genotype table
 params = dict()
@@ -186,7 +163,7 @@ params['start_pos'] = 'end'
 convert_tmp_full_105_table(params)
 
 # Build Mappable Extensions
-for row in cursor_read.execute("SELECT *,rowid FROM load_mappable_tes"):
+for row in cursor_read.execute("SELECT *, rowid FROM load_mappable_tes"):
     totals = {}
     calls = []
     for i in xrange(9,152):
@@ -200,11 +177,44 @@ for row in cursor_read.execute("SELECT *,rowid FROM load_mappable_tes"):
         cursor_write.execute('INSERT INTO load_map_calls (call_value, number_of_hits, load_mappable_tes_id) '
                              'VALUES (?,?,?)', (key, value, row['rowid']))
 
+# Adding to the report table (TE_in_CC and gene_detail) the values from the derived table, load_mappable_tes.
+for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
+    regions = row['region'].split('|')
+    gene_ids = row['gene_id'].split('|')
+    gene_names = row['gene_name'].split('|')
+    assert (len(regions) == len(gene_ids) == len(gene_names))
+    gene_detail_rowids = list()
+    for i in range(0, len(regions)):
+        gene_detail_rowids.append(
+            cursor_write.execute('INSERT INTO gene_detail(region, gene_id, gene_name) VALUES (?,?,?)',
+                                 (regions[i], gene_ids[i], gene_names[i])).lastrowid)
+    genotype_in_founders = None
+    SDP = None
+    count_in_founders = None
+    count_in_CC = None
+    te_in_cc_id = cursor_write.execute('INSERT INTO TE_in_CC (my_id, chrom, pos, strand) VALUES (?,?,?,?)',
+                                       (row['my_id'], row['chromo'], row['pos'], row['strand'])).lastrowid
+    #Write out the join table
+    for gene_detail_id in gene_detail_rowids:
+        cursor_write.execute('INSERT INTO junct_te_in_cc_gene(gene_detail_id, te_in_cc_id) VALUES(?,?)', (gene_detail_id,
+                                                                                                          te_in_cc_id))
+
+rows_to_delete = []
+for row_driver in cursor_read.execute('SELECT rowid, my_id, chrom, pos, strand FROM TE_in_CC '):
+    if cursor_read2.execute('SELECT count(*) FROM raw where my_id = ? AND chrom = ? AND pos = ? AND strand = ? '
+                            'AND TE = 1 ',
+                            (row_driver['my_id'], row_driver['chrom'], row_driver['pos'], row_driver['strand'])
+                            ).fetchone()[0] == 0:
+        # print('{} {} {} {}'.format(row_driver['my_id'], row_driver['chrom'], row_driver['pos'], row_driver['strand']))
+        rows_to_delete.append(row_driver[0])
+for rowid in rows_to_delete:
+    cursor_write.execute('DELETE FROM TE_in_CC where rowid = ?', (rowid,) )
 connection.commit()
 
+
 # Delete load tables
-#delete_list = []
-#for row in cursor_read.execute("SELECT name FROM sqlite_master WHERE type='table' AND name like 'load_%' ORDER BY name"):
-#    delete_list.append(row[0])
-#for delete_item in delete_list:
-#    cursor_write.execute("DROP TABLE " + delete_item )
+delete_list = []
+for row in cursor_read.execute("SELECT name FROM sqlite_master WHERE type='table' AND ( name like 'load_%' OR name like 'tmp_%' ) ORDER BY name"):
+    delete_list.append(row[0])
+for delete_item in delete_list:
+    cursor_write.execute("DROP TABLE " + delete_item )
