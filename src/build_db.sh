@@ -7,7 +7,7 @@ perl -p -e 's/\|/-/g' raw_csv/anwica_table_start.csv > raw_csv/anwica_table_star
 perl -p -e 's/\|/-/g' raw_csv/anwica_table_end.csv > raw_csv/anwica_table_end.clean.csv
 
 # Loads the tables above into the database.
-sqlite3 TE_db.sqlite < load_db.sql
+sqlite3 TE_db.sqlite < build_db.sql
 
 # Cleanup of intermediate  files no longer
 rm raw_csv/*.clean.csv

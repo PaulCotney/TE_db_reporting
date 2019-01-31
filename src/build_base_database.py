@@ -1,6 +1,7 @@
 import sqlite3
 import itertools
 import re
+import sys
 
 
 # This takes a dictionary of values and uses that to create the extension105mer / junct_105_hits / hit tables from
@@ -32,7 +33,7 @@ def convert_tmp_full_105_table(args):
         for sample in itertools.islice(row.keys(), call105_columns['start'] + 1, call105_columns['end']):
             if int(row[sample].replace('.0', '')) > 0:
                 pid_hit = cursor_write.execute('INSERT INTO hit (target, value) VALUES (?,?)',
-                                               (sample.replace(':0', ''), row[sample])).lastrowid
+                                               (sample.replace(':1', ''), row[sample])).lastrowid
                 cursor_write.execute('INSERT INTO junct_105_hits105(extension105mer_id, hit_id) VALUES (?,?)',
                                      (pid_105, pid_hit))
         for genotype_call in row['genotype'].split('|'):
@@ -151,7 +152,7 @@ for genotype in genotypes:
                                    (genotype, genotype.replace('*', ''))).lastrowid
     else:
         pid = cursor_write.execute('INSERT INTO genotype ( value, short_value) VALUES (?, ?) ',
-                                   (genotype, instance.group(1).replace('*', ''))).lastrowid
+                                   (genotype, instance.group (1).replace('*', ''))).lastrowid
 
     params['potential_genotype'][genotype] = pid
 
@@ -211,6 +212,7 @@ for rowid in rows_to_delete:
     cursor_write.execute('DELETE FROM TE_in_CC where rowid = ?', (rowid,))
 connection.commit()
 
+sys.exit()
 # Delete load tables
 delete_list = []
 for row in cursor_read.execute(
