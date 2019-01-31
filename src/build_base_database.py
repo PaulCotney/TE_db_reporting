@@ -2,6 +2,7 @@ import sqlite3
 import itertools
 import re
 
+
 # This takes a dictionary of values and uses that to create the extension105mer / junct_105_hits / hit tables from
 # load tables.
 def convert_tmp_full_105_table(args):
@@ -15,23 +16,23 @@ def convert_tmp_full_105_table(args):
 
     for row in cursor_read.execute("SELECT * FROM {}".format(args['table_name'])):
         pid_105 = cursor_write.execute('INSERT INTO extension105mer(start_or_end, side, chromo, pos, strand, '
-                                      'ref_like_prefix_seq, insertion_after_prefix_seq, insertion_before_suffix_seq, '
-                                      'ref_like_suffix_seq, TELike_seq, REF, state) '
-                                      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                                      (args['start_pos'], row['side'], row['chromo'], row['pos'], row['strand'],
-                                       row['ref_like_prefix'], row['insertion_after_prefix'],
-                                       row['insertion_before_suffix'], row['ref_like_suffix'],
-                                       row['TELike'], row['REF'], row['state'])).lastrowid
+                                       'ref_like_prefix_seq, insertion_after_prefix_seq, insertion_before_suffix_seq, '
+                                       'ref_like_suffix_seq, TELike_seq, REF, state) '
+                                       'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                       (args['start_pos'], row['side'], row['chromo'], row['pos'], row['strand'],
+                                        row['ref_like_prefix'], row['insertion_after_prefix'],
+                                        row['insertion_before_suffix'], row['ref_like_suffix'],
+                                        row['TELike'], row['REF'], row['state'])).lastrowid
         for sample in itertools.islice(row.keys(), call_columns['start'] + 1, call_columns['end']):
             if int(row[sample]) > 0:
                 pid_hit = cursor_write.execute('INSERT INTO hit (target, value) VALUES (?,?)',
-                                     (sample, row[sample])).lastrowid
+                                               (sample, row[sample])).lastrowid
                 cursor_write.execute('INSERT INTO junct_105_hits(extension105mer_id, hit_id) VALUES (?,?)',
                                      (pid_105, pid_hit))
         for sample in itertools.islice(row.keys(), call105_columns['start'] + 1, call105_columns['end']):
             if int(row[sample].replace('.0', '')) > 0:
                 pid_hit = cursor_write.execute('INSERT INTO hit (target, value) VALUES (?,?)',
-                                     (sample.replace(':0', ''), row[sample])).lastrowid
+                                               (sample.replace(':0', ''), row[sample])).lastrowid
                 cursor_write.execute('INSERT INTO junct_105_hits105(extension105mer_id, hit_id) VALUES (?,?)',
                                      (pid_105, pid_hit))
         for genotype_call in row['genotype'].split('|'):
@@ -53,11 +54,11 @@ cursor_write = connection.cursor()
 with open('build_base_database.sql', 'r') as myfile:
     commands = myfile.read().replace('\n', '').split(";")
     for command in commands:
-        if len(command.replace(" ","")) <> 0:
-            try :
+        if len(command.replace(" ", "")) != 0:
+            try:
                 cursor_write.execute(command + ";")
             except sqlite3.OperationalError as e:
-                print("Fail on command: {} with {}", (command, e ))
+                print("Fail on command: {} with {}", (command, e))
                 raise
 
 # Remove items from mappable_TEs where no founder strain is in the genotypes field
@@ -136,8 +137,8 @@ cursor_read = connection.cursor()
 params = dict()
 params['potential_genotype'] = dict()
 genotype_raw = []
-for genotype in cursor_read.execute("SELECT DISTINCT genotype FROM (SELECT genotype FROM tmp_full_105mer_start UNION SELECT "
-                               "genotype FROM tmp_full_105mer_end) "):
+for genotype in cursor_read.execute("SELECT DISTINCT genotype FROM (SELECT genotype FROM tmp_full_105mer_start UNION "
+                                    "SELECT genotype FROM tmp_full_105mer_end) "):
     genotype_raw.append(genotype)
 genotypes = set()
 for raw in genotype_raw:
@@ -154,7 +155,6 @@ for genotype in genotypes:
 
     params['potential_genotype'][genotype] = pid
 
-
 params['table_name'] = 'tmp_full_105mer_start'
 params['start_pos'] = 'start'
 convert_tmp_full_105_table(params)
@@ -166,7 +166,7 @@ convert_tmp_full_105_table(params)
 for row in cursor_read.execute("SELECT *, rowid FROM load_mappable_tes"):
     totals = {}
     calls = []
-    for i in xrange(9,152):
+    for i in xrange(9, 152):
         calls.append(int(row[i]))
     for call in calls:
         if call in totals.keys():
@@ -194,10 +194,10 @@ for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
     count_in_CC = None
     te_in_cc_id = cursor_write.execute('INSERT INTO TE_in_CC (my_id, chrom, pos, strand) VALUES (?,?,?,?)',
                                        (row['my_id'], row['chromo'], row['pos'], row['strand'])).lastrowid
-    #Write out the join table
+    # Write out the join table
     for gene_detail_id in gene_detail_rowids:
-        cursor_write.execute('INSERT INTO junct_te_in_cc_gene(gene_detail_id, te_in_cc_id) VALUES(?,?)', (gene_detail_id,
-                                                                                                          te_in_cc_id))
+        cursor_write.execute('INSERT INTO junct_te_in_cc_gene(gene_detail_id, te_in_cc_id) '
+                             'VALUES(?,?)', (gene_detail_id, te_in_cc_id))
 
 rows_to_delete = []
 for row_driver in cursor_read.execute('SELECT rowid, my_id, chrom, pos, strand FROM TE_in_CC '):
@@ -208,13 +208,14 @@ for row_driver in cursor_read.execute('SELECT rowid, my_id, chrom, pos, strand F
         # print('{} {} {} {}'.format(row_driver['my_id'], row_driver['chrom'], row_driver['pos'], row_driver['strand']))
         rows_to_delete.append(row_driver[0])
 for rowid in rows_to_delete:
-    cursor_write.execute('DELETE FROM TE_in_CC where rowid = ?', (rowid,) )
+    cursor_write.execute('DELETE FROM TE_in_CC where rowid = ?', (rowid,))
 connection.commit()
-
 
 # Delete load tables
 delete_list = []
-for row in cursor_read.execute("SELECT name FROM sqlite_master WHERE type='table' AND ( name like 'load_%' OR name like 'tmp_%' ) ORDER BY name"):
+for row in cursor_read.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND ( name like 'load_%' OR name like "
+        "'tmp_%' ) ORDER BY name"):
     delete_list.append(row[0])
 for delete_item in delete_list:
-    cursor_write.execute("DROP TABLE " + delete_item )
+    cursor_write.execute("DROP TABLE " + delete_item)
