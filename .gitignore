@@ -9,3 +9,4 @@ kmer_query_export.sql
 .idea
 *.backup
 *.zip
+*.gz
