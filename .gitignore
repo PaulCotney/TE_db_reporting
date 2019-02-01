@@ -8,3 +8,4 @@ kmer_query_export.sql
 .DS_Store
 .idea
 *.backup
+*.zip
