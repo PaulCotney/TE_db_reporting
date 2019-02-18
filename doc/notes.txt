@@ -164,4 +164,7 @@ LEFT OUTER JOIN (SELECT number_of_hits, load_mappable_tes_id FROM load_map_calls
 LEFT OUTER JOIN (SELECT number_of_hits, load_mappable_tes_id FROM load_map_calls WHERE call_value = 2) e ON a.rowid = e.load_mappable_tes_id;
 ----
 
-I am missing data with TEs that 
+sep-19-csv-processing.ipynb -> creates ts.p and exon_ts.ps for below
+How the TE details become -> TE summary() uses notebook ./Charles/sep-19-csv-processing-AK.ipynb
+
+exon -> dictionary : key =

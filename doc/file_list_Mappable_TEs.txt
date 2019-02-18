@@ -1,0 +1,32 @@
+csbio-compute003$ find Anwica/ \( -name '*.ipynb' -o -name '*.py' \) -exec grep -l FinalMatrix_ALL_collapsed '{}' \;
+csbio-server011$ find . -type f -name '*.ipynb' -exec grep -H Mappable_TEs '{}' \;
+./TransposableElements/ProcessMerged.ipynb:    "teData = pandas.read_csv(\"Mappable_TEs.csv\")\n",
+./Charles/MappableTE-Private2Shared.ipynb:    "PATH = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Charles/MappableTE-Private2Shared.ipynb:    "READ = \"Mappable_TEs.back.csv\""
+./Charles/sep-19-csv-processing-AK.ipynb:    "out_path = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+grep: ./Maya/ProblemSet2.ipynb: Permission denied
+^C^C./Anwica/TransposableElement/AddingSampleToPopulation/FixTables/adding_gene_annotation.ipynb:    "## /csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/Mappable_TEs.csv"
+./Anwica/TransposableElement/AddingSampleToPopulation/FixTables/adding_gene_annotation.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/TransposableElement/FilterSuspiciousData/FilterAllHet.ipynb:    "    filename = \"%s/Mappable_TEs.csv\" %website_dir\n",
+./Anwica/TransposableElement/TEprobeCounts/Step03_CollapseTable-allState.ipynb:    "    file1 = \"/csbiodata/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/TransposableElement/TEprobeCounts/Step03_CollapseTable_onlyDenovo.ipynb:    "    file1 = \"/csbiodata/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/TransposableElement/DiscoverTE_new/Step10_CreateNewProbeMatrix.ipynb:    "    filename = \"%s/Mappable_TEs.csv\" %website_dir\n",
+./Anwica/TransposableElement/DataAnalysisTE/AK2vsRelocate2-Copy1.ipynb:    "    filename = \"%s/Mappable_TEs.csv\" %te_dir\n",
+./Anwica/IMGC2018/private.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/private.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/HaplotypeSpecificsegregation-Copy1.ipynb:    "    filename = \"%s/Mappable_TEs.csv\" %output_dir \n",
+./Anwica/IMGC2018/HaplotypeSpecificsegregation-Copy1.ipynb:    "    outfile = \"Mappable_TEs_gen.csv\"\n",
+./Anwica/IMGC2018/HaplotypeSpecificsegregation-Copy1.ipynb:    "    filename = \"Mappable_TEs_gen.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/Stats.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",
+./Anwica/IMGC2018/HaplotypeSpecificsegregation.ipynb:    "    filename = \"%s/Mappable_TEs.csv\" %output_dir \n",
+./Anwica/IMGC2018/HaplotypeSpecificsegregation.ipynb:    "    outfile = \"Mappable_TEs_gen.csv\"\n",
+./Anwica/IMGC2018/HaplotypeSpecificsegregation.ipynb:      "Wrote file Mappable_TEs_gen.csv [14338 lines]\n"
+./Anwica/IMGC2018/HaplotypeSpecificsegregation.ipynb:    "    filename = \"Mappable_TEs_gen.csv\"\n",
+./Anwica/IMGC2018/PhylogeneticTree.ipynb:    "    filename = \"/csbiodata03/public/www.csbio.unc.edu/htdocs/TEs/tmp/Mappable_TEs.csv\"\n",

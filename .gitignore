@@ -10,3 +10,8 @@ kmer_query_export.sql
 *.backup
 *.zip
 *.gz
+*.dot
+*.pdf
+*.db
+*.p
+*.pickle

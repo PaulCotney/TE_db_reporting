@@ -1,0 +1,10 @@
+csbio-compute003$ find ./Anwica/ \( -name '*.ipynb' -o -name '*.py' \) -exec grep -l FinalMatrix_v2 '{}'  \;
+
+./Anwica/TransposableElement/DiscoverTE_new/Step08_FinalTable-Copy1.ipynb
+./Anwica/TransposableElement/DiscoverTE_new/Step08_FinalTable.ipynb
+
+./Anwica/TransposableElement/DownloadablePackage/Step08_FinalTable-Copy1.ipynb
+./Anwica/TransposableElement/DownloadablePackage/Step08_FinalTable.ipynb
+./Anwica/TransposableElement/TEprobeCounts/Step03_CollapseTable-allState.ipynb
+./Anwica/TransposableElement/TEprobeCounts/Step02_MakeTable.ipynb
+./Anwica/TransposableElement/TEprobeCounts/Step03_CollapseTable_onlyDenovo.ipynb
