@@ -19,3 +19,7 @@ CREATE TABLE tmp_full_105mer_end
 AS SELECT *
 FROM load_anwica_table_end a, load_join_table_end b, load_105mers_end c
 WHERE a.ae_i = b.ae_i AND b.tee_i = c.tee_i;
+ATTACH DATABASE 'CCIntervalsAK.sqlite' AS intervals;
+CREATE TABLE intervals AS SELECT * FROM intervals.intervals;
+CREATE TABLE samples AS SELECT * FROM intervals.samples;
+detach intervals;

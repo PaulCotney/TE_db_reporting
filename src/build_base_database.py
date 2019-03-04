@@ -10,7 +10,6 @@ def convert_tmp_full_105_table(args):
     call_columns = dict()
     call105_columns = dict()
     row_columns = cursor_read.execute("SELECT * FROM {}".format(args['table_name'])).fetchone()
-    print(row_columns.keys())
     call_columns['start'] = row_columns.keys().index('TE') + 1
     try:
         call_columns['end'] = row_columns.keys().index('tes_i')-1
