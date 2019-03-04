@@ -8,8 +8,8 @@
 
 .import ./raw_csv/Mappable_TEs.clean.csv load_mappable_tes
 UPDATE load_mappable_tes SET genotype = replace( genotype, '-', '|' );
-UPDATE load_anwica_table_end SET genotype = replace( genotype, '-', '|' );
-UPDATE load_anwica_table_start SET genotype = replace( genotype, '-', '|' );
+--UPDATE load_anwica_table_end SET genotype = replace( genotype, '-', '|' );
+--UPDATE load_anwica_table_start SET genotype = replace( genotype, '-', '|' );
 .import ./raw_csv/FinalMatrix_ALL.csv load_FinalMatrix_ALL
 CREATE TABLE tmp_full_105mer_start
 AS SELECT *
