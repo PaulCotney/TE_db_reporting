@@ -191,13 +191,3 @@ for row_driver in cursor_read.execute('SELECT rowid, my_id, chrom, pos, strand F
 for rowid in rows_to_delete:
     cursor_write.execute('DELETE FROM TE_in_CC where rowid = ?', (rowid,))
 connection.commit()
-
-sys.exit()
-# Delete load tables
-delete_list = []
-for row in cursor_read.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND ( name like 'load_%' OR name like "
-        "'tmp_%' ) ORDER BY name"):
-    delete_list.append(row[0])
-for delete_item in delete_list:
-    cursor_write.execute("DROP TABLE " + delete_item)

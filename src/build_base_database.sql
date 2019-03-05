@@ -12,7 +12,8 @@ DROP TABLE IF EXISTS genotype;
 DROP TABLE IF EXISTS extension105mer;
 DROP TABLE IF EXISTS load_map_calls;
 DROP TABLE IF EXISTS kmer_query;
-CREATE TABLE sample (pid INTEGER PRIMARY KEY, name TEXT, strain TEXT, founder INTEGER, strain_code TEXT, long_strain_code TEXT );
+CREATE TABLE sample (pid INTEGER PRIMARY KEY, name TEXT, strain TEXT, founder INTEGER,
+strain_code TEXT, long_strain_code TEXT, bits_per_byte FLOAT, bases INTEGER, bytes_compressed INTEGER );
 CREATE TABLE raw (pid INTEGER PRIMARY KEY, my_id STRING, side STRING, chrom STRING,
 pos INTEGER, strand STRING, ref_like_prefix STRING, insertion_after_prefix STRING, 
 insertion_before_suffix STRING, ref_like_suffix STRING, REF STRING, TE STRING);
