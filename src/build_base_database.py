@@ -114,11 +114,11 @@ for sample in itertools.islice(row.keys(), row_columns_start + 1, row_columns_en
 
 connection.commit()
 
-# Now with the sample table loaded we create the raw_matrix and the sample_calls table
+# Now with the sample table loaded we create the raw_matrix and the junct_sample_TEs table
 cursor_read.close()
 cursor_read = connection.cursor()
 for row in cursor_read.execute('SELECT * FROM load_FinalMatrix_ALL'):
-    raw_rowid = cursor_write.execute('INSERT INTO raw (my_id, side, chrom, pos , strand, ref_like_prefix, '
+    raw_rowid = cursor_write.execute('INSERT INTO TE (my_id, side, chrom, pos , strand, ref_like_prefix, '
                                      'insertion_after_prefix, insertion_before_suffix, ref_like_suffix, REF, TE) '
                                      'values (?,?,?,?,?,?,?,?,?,?,?)',
                                      (row['my_id'], row['side'], row['chromo'], row['pos'], row['strand'],
@@ -127,7 +127,7 @@ for row in cursor_read.execute('SELECT * FROM load_FinalMatrix_ALL'):
                                       row['TE'])).lastrowid
     for sample in itertools.islice(row.keys(), row_columns_start + 1, row_columns_end):
         if int(row[sample]) > 0:
-            cursor_write.execute('INSERT INTO sample_call (raw_id, sample_id, value) VALUES (?,?,?)',
+            cursor_write.execute('INSERT INTO junct_sample_TE (TE_id, sample_id, value) VALUES (?,?,?)',
                                  (raw_rowid, sample_table[sample], row[sample]))
 connection.commit()
 cursor_read.close()
@@ -182,7 +182,7 @@ for row in cursor_read.execute('SELECT * FROM load_mappable_tes'):
 
 rows_to_delete = []
 for row_driver in cursor_read.execute('SELECT rowid, my_id, chrom, pos, strand FROM TE_in_CC '):
-    if cursor_read2.execute('SELECT count(*) FROM raw where my_id = ? AND chrom = ? AND pos = ? AND strand = ? '
+    if cursor_read2.execute('SELECT count(*) FROM TE where my_id = ? AND chrom = ? AND pos = ? AND strand = ? '
                             'AND TE = 1 ',
                             (row_driver['my_id'], row_driver['chrom'], row_driver['pos'], row_driver['strand'])
                             ).fetchone()[0] == 0:
