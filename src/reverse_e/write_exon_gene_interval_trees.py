@@ -48,4 +48,4 @@ EXON_PATH = "whitelist_exon.csv"
 FLANK_RANGE = 1000
 exons = pd.read_csv(EXON_PATH)
 genes = pd.read_csv(GENE_PATH)
-rebuild_all_intervals_trees
+rebuild_all_intervals_trees()

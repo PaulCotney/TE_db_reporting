@@ -250,4 +250,5 @@ def collapse():
             # print row_data
     print("Wrote file %s [%d lines]" % (filename, len(new_data)))
 
+
 collapse()
